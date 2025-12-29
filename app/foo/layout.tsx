@@ -1,4 +1,12 @@
+import type { Metadata } from 'next';
 import { ReactNode } from 'react';
+
+export const metadata: Metadata = {
+  title: 'Fooページ',
+  openGraph: {
+    title: 'Fooページ',
+  },
+};
 
 type RootLayoutProps = {
   children: ReactNode;
