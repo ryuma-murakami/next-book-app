@@ -1,10 +1,21 @@
-type ItemProps = {
+import type { Metadata } from 'next';
+
+type PageProps = {
   params: {
     id: string;
   };
 };
 
-const Item = async ({ params }: ItemProps) => {
+export const generateMetadata = async ({
+  params,
+}: PageProps): Promise<Metadata> => {
+  const { id } = await params;
+  return {
+    title: `Item${id}`,
+  };
+};
+
+const Item = async ({ params }: PageProps) => {
   const { id } = await params;
   return <h1>Item{id}ページ</h1>;
 };
