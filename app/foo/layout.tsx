@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
 import { ReactNode } from 'react';
 
 export const metadata: Metadata = {
@@ -16,7 +17,13 @@ const Layout = ({ children }: RootLayoutProps) => {
   return (
     <>
       <nav>
-        <a href="/foo">foo</a>/<a href="/foo/bar">bar</a>
+        <Link href="/foo" prefetch={false}>
+          foo
+        </Link>
+        /
+        <Link href="/foo/bar" prefetch={false}>
+          bar
+        </Link>
       </nav>
       {children}
     </>
