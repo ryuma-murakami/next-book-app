@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 
 type PageProps = {
   params: {
@@ -20,6 +21,9 @@ export const generateMetadata = async ({
 const Item = async ({ params }: PageProps) => {
   const { id } = await params;
   const response = await fetch(`http://localhost:3000/api?id=${id}`);
+  if (response.status === 404) {
+    notFound();
+  }
   const item = await response.json();
   return (
     <div>
