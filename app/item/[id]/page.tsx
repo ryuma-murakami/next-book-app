@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { Suspense } from 'react';
+import StreamingPage from '../_StreamingPage';
 
 type PageProps = {
   params: {
@@ -20,16 +21,10 @@ export const generateMetadata = async ({
 
 const Item = async ({ params }: PageProps) => {
   const { id } = await params;
-  const response = await fetch(`http://localhost:3000/api?id=${id}`);
-  if (response.status === 404) {
-    notFound();
-  }
-  const item = await response.json();
   return (
-    <div>
-      <h2>{item.name}</h2>
-      <p>価格: {item.price}円</p>
-    </div>
+    <Suspense fallback={<div>loading...</div>}>
+      <StreamingPage id={id} />
+    </Suspense>
   );
 };
 
