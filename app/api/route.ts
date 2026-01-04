@@ -17,6 +17,7 @@ const items = [
 ];
 
 export const GET = async (request: Request) => {
+  await new Promise(resolve => setTimeout(resolve, 2000));
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
 
