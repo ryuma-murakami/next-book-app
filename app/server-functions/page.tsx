@@ -1,26 +1,31 @@
 'use client';
-import { useState, useTransition } from 'react';
-import { incrementCount } from './actions';
+import { useState, useActionState } from 'react';
+import { type ActionState, checkText } from './actions';
 
-const ServerFunctions = () => {
-  const [count, setCount] = useState(0);
-  const [isPending, startTransition] = useTransition();
+const initialState: ActionState = {};
 
-  const handleClick = async () => {
-    startTransition(async () => {
-      const newCount = await incrementCount();
-      setCount(newCount);
-    });
-  };
+export default function ServerFunctions() {
+  const [text, setText] = useState('');
+  const [state, submitAction, isPending] = useActionState(
+    checkText,
+    initialState,
+  );
 
   return (
-    <div>
-      <button type="button" onClick={handleClick} disabled={isPending}>
-        click!!
+    <form action={submitAction}>
+      テキスト :
+      <input
+        type="text"
+        name="myText"
+        value={text}
+        onChange={e => setText(e.target.value)}
+      />
+      <button type="submit" disabled={isPending}>
+        submit!
       </button>
-      {isPending ? <p>incrementing...</p> : <p>Count: {count}</p>}
-    </div>
+      {!state.error && !state.success && <p>テキストを入力してください</p>}
+      {state.error && <p style={{ color: 'red' }}>{state.error}</p>}
+      {state.success && <p style={{ color: 'green' }}>{state.success}</p>}
+    </form>
   );
-};
-
-export default ServerFunctions;
+}
