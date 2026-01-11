@@ -1,31 +1,46 @@
 'use client';
 import { useState, useActionState } from 'react';
-import { type ActionState, checkText } from './actions';
+import { updateForm } from './actions';
 
-const initialState: ActionState = {};
+type StateType = string[] | null;
 
 export default function ServerFunctions() {
-  const [text, setText] = useState('');
-  const [state, submitAction, isPending] = useActionState(
-    checkText,
-    initialState,
+  const [title, setTitle] = useState('');
+  const [error, submitAction, isPending] = useActionState<StateType, FormData>(
+    async (_prevState, formData) => {
+      const { result, errors } = await updateForm(
+        formData.get('title') as string,
+      );
+
+      if (!errors) {
+        setTitle(result);
+      }
+
+      return errors;
+    },
+    null,
   );
 
   return (
-    <form action={submitAction}>
-      テキスト :
-      <input
-        type="text"
-        name="myText"
-        value={text}
-        onChange={e => setText(e.target.value)}
-      />
-      <button type="submit" disabled={isPending}>
-        submit!
-      </button>
-      {!state.error && !state.success && <p>テキストを入力してください</p>}
-      {state.error && <p style={{ color: 'red' }}>{state.error}</p>}
-      {state.success && <p style={{ color: 'green' }}>{state.success}</p>}
+    <form noValidate action={submitAction}>
+      <ul>
+        {error?.map(msg => (
+          <li key={msg}>{msg}</li>
+        ))}
+      </ul>
+      <div>
+        <label htmlFor="title">テキスト:</label>
+        <br />
+        <input id="title" name="title" type="text" />
+      </div>
+      <div>
+        <button type="submit" disabled={isPending}>
+          submit!
+        </button>
+      </div>
+      <div>
+        <p>{title}</p>
+      </div>
     </form>
   );
 }
